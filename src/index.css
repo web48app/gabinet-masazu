@@ -1,0 +1,21 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+  body { @apply bg-white font-sans text-[16px] text-body antialiased; }
+  ::selection { @apply bg-sage text-white; }
+}
+
+@layer components {
+  .btn-sage {
+    @apply inline-flex items-center justify-center rounded-full bg-sage px-11 py-[18px] text-[15px] font-bold text-white transition hover:bg-sage-dark;
+  }
+  .btn-hero {
+    @apply inline-flex items-center gap-3 rounded-full bg-sage px-8 py-[17px] text-[12px] font-extrabold uppercase tracking-[0.15em] text-white transition hover:bg-sage-dark;
+  }
+  .btn-outline-white {
+    @apply inline-flex items-center gap-3 rounded-full border-2 border-white px-8 py-[15px] text-[12px] font-extrabold uppercase tracking-[0.15em] text-white transition hover:bg-white hover:text-ink;
+  }
+}

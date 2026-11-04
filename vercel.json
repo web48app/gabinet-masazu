@@ -1,0 +1,34 @@
+{
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "redirects": [
+    { "source": "/strona-glowna", "destination": "/", "permanent": true },
+    { "source": "/feed", "destination": "/", "permanent": true },
+    { "source": "/comments/feed", "destination": "/", "permanent": true },
+    { "source": "/wp-admin/:path*", "destination": "/", "permanent": true },
+    { "source": "/wp-login.php", "destination": "/", "permanent": true },
+    { "source": "/wp-content/:path*", "destination": "/", "permanent": true },
+    { "source": "/wp-json/:path*", "destination": "/", "permanent": true },
+    { "source": "/xmlrpc.php", "destination": "/", "permanent": true }
+  ],
+  "headers": [
+    {
+      "source": "/assets/(.*)",
+      "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }]
+    },
+    {
+      "source": "/img/(.*)",
+      "headers": [{ "key": "Cache-Control", "value": "public, max-age=2592000" }]
+    },
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
+        { "key": "X-Frame-Options", "value": "SAMEORIGIN" }
+      ]
+    }
+  ]
+}
