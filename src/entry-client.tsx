@@ -9,12 +9,12 @@ const root = document.getElementById('root')!
 const app = (
   <StrictMode>
     <HelmetProvider>
-      <BrowserRouter>
+      <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
         <App />
       </BrowserRouter>
     </HelmetProvider>
   </StrictMode>
 )
 
-if (root.hasChildNodes()) hydrateRoot(root, app)
+if (root.firstElementChild) hydrateRoot(root, app)
 else createRoot(root).render(app)

@@ -9,7 +9,7 @@ export function render(url: string) {
   const html = renderToString(
     <StrictMode>
       <HelmetProvider context={ctx}>
-        <StaticRouter location={url}>
+        <StaticRouter location={url} future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
           <App />
         </StaticRouter>
       </HelmetProvider>

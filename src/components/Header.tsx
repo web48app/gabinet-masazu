@@ -33,7 +33,9 @@ function InfoItem({ icon, label, value, href }: { icon: React.ReactNode; label: 
 export default function Header() {
   const [open, setOpen] = useState(false)
   const { pathname } = useLocation()
-  useEffect(() => setOpen(false), [pathname])
+  useEffect(() => {
+    setOpen(false)
+  }, [pathname])
 
   return (
     <header className="relative z-30 bg-white">

@@ -1,16 +1,19 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { motion } from 'framer-motion'
+import { Banknote, CreditCard, Smartphone } from 'lucide-react'
 import Seo from '../components/Seo'
 import PageBanner from '../components/PageBanner'
 import Reveal from '../components/Reveal'
 import FaqList from '../components/FaqList'
 import CtaBand from '../components/CtaBand'
-import { categories, prices, pricesFor, pricingFaq, serviceDetails, site } from '../data/site'
+import { categories, prices, pricesFor, pricingFaq, serviceDetails, type ServiceDetail } from '../data/site'
 import { breadcrumb, businessSchema, makeFaqSchema, servicesListSchema } from '../data/schema'
 
 const payments = [
-  { icon: '💵', label: 'Gotówka' },
-  { icon: '💳', label: 'Karta' },
-  { icon: '📱', label: 'BLIK' },
+  { icon: Banknote, label: 'Gotówka' },
+  { icon: CreditCard, label: 'Karta płatnicza' },
+  { icon: Smartphone, label: 'BLIK' },
 ]
 
 const tips = [
@@ -22,6 +25,7 @@ const tips = [
 
 export default function Pricing() {
   const cats = Object.entries(categories) as [keyof typeof categories, string][]
+  const [active, setActive] = useState<keyof typeof categories>('terapia')
   return (
     <>
       <Seo
@@ -37,16 +41,13 @@ export default function Pricing() {
         <div className="mx-auto max-w-[860px] px-4">
           <Reveal>
             <h1 className="text-center font-display text-[36px] tracking-[0.12em] text-leaf lg:text-[40px]">CENNIK</h1>
-            <p className="mx-auto mt-4 max-w-[620px] text-center text-[15px]">
-              Aktualne ceny zabiegów w gabinecie masażu i gimnastyki korekcyjnej Karoliny Orlik, {site.street}, Tarnów.
-            </p>
           </Reveal>
 
-          <div className="mt-10 overflow-x-auto">
-            <table className="w-full min-w-[420px] border-collapse text-[15px]">
+          <div className="-mx-4 mt-10 overflow-x-auto px-4 py-3">
+            <table className="w-full min-w-[420px] border-separate border-spacing-0 text-[15px]">
               <caption className="sr-only">Cennik masaży i gimnastyki korekcyjnej – Tarnów</caption>
               <thead>
-                <tr className="border-b-2 border-[#e6e6e6] text-left text-sm font-bold uppercase tracking-[0.2em] text-leaf">
+                <tr className="text-left text-sm font-bold uppercase tracking-[0.2em] text-leaf [&>th]:border-b-2 [&>th]:border-[#e6e6e6]">
                   <th scope="col" className="py-4 pr-4">Rodzaj</th>
                   <th scope="col" className="py-4 pr-4 text-right">Czas</th>
                   <th scope="col" className="py-4 text-right">Cena</th>
@@ -54,7 +55,13 @@ export default function Pricing() {
               </thead>
               <tbody>
                 {prices.map((p, i) => (
-                  <tr key={p.name + p.time} className={'text-bronze ' + (i % 2 === 0 ? 'bg-[#f5f5f5]' : 'bg-white')}>
+                  <tr
+                    key={p.name + p.time}
+                    className={
+                      'relative cursor-default text-bronze transition duration-200 ease-out hover:z-10 hover:-translate-y-1 hover:scale-[1.02] hover:bg-white hover:shadow-[0_14px_32px_rgba(0,0,0,0.13)] hover:[&>th]:shadow-[inset_4px_0_0_#9CC7A1] ' +
+                      (i % 2 === 0 ? 'bg-[#f5f5f5]' : 'bg-white')
+                    }
+                  >
                     <th scope="row" className="py-3 pl-3 pr-4 text-left font-normal">{p.name}</th>
                     <td className="py-3 pr-4 text-right">{p.time} min</td>
                     <td className="py-3 pr-3 text-right font-semibold">{p.price} zł</td>
@@ -66,11 +73,13 @@ export default function Pricing() {
 
           <div className="mt-20 text-center">
             <h2 className="text-[28px] font-extrabold text-body">Formy płatności</h2>
-            <ul className="mt-8 flex justify-center gap-14">
+            <ul className="mt-8 flex justify-center gap-8 sm:gap-14">
               {payments.map((p) => (
-                <li key={p.label} className="flex flex-col items-center">
-                  <span className="flex h-[70px] w-[70px] items-center justify-center rounded-full bg-[#f2f4f2] text-3xl" aria-hidden="true">{p.icon}</span>
-                  <span className="mt-3 text-sm tracking-wider">{p.label}</span>
+                <li key={p.label} className="group flex flex-col items-center">
+                  <span className="flex h-[76px] w-[76px] items-center justify-center rounded-full bg-sage-light text-leaf ring-1 ring-sage/40 transition duration-300 group-hover:-translate-y-1 group-hover:bg-sage group-hover:text-white group-hover:shadow-[0_10px_24px_rgba(156,199,161,0.45)]" aria-hidden="true">
+                    <p.icon size={32} strokeWidth={1.6} />
+                  </span>
+                  <span className="mt-3 text-sm font-semibold tracking-wider text-ink">{p.label}</span>
                 </li>
               ))}
             </ul>
@@ -87,35 +96,41 @@ export default function Pricing() {
             <p className="mx-auto mt-4 max-w-[640px]">Krótko o każdym zabiegu – dla kogo jest i czego się spodziewać. Nie wiesz, co wybrać? Zadzwoń, doradzę.</p>
           </Reveal>
 
+          <div role="tablist" aria-label="Kategorie zabiegów" className="mt-12 flex gap-2 overflow-x-auto pb-2 sm:flex-wrap sm:justify-center">
+            {cats.map(([key, label]) => (
+              <button
+                key={key}
+                role="tab"
+                id={`tab-${key}`}
+                aria-selected={active === key}
+                aria-controls={`panel-${key}`}
+                onClick={() => setActive(key)}
+                className={
+                  'shrink-0 rounded-full px-6 py-3 text-[14px] font-bold transition ' +
+                  (active === key ? 'bg-sage text-white shadow-[0_8px_20px_rgba(156,199,161,0.45)]' : 'bg-white text-ink hover:bg-sage-light')
+                }
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+
           {cats.map(([key, label]) => (
-            <div key={key} className="mt-14">
-              <h3 className="border-b border-[#dcdcdc] pb-3 font-display text-2xl text-leaf">{label}</h3>
-              <div className="mt-6 grid gap-6 md:grid-cols-2">
+            <div key={key} role="tabpanel" id={`panel-${key}`} aria-labelledby={`tab-${key}`} hidden={active !== key} className="mt-10">
+              <h3 className="sr-only">{label}</h3>
+              <motion.div
+                key={active === key ? 'on' : 'off'}
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.35 }}
+                className="grid gap-6 md:grid-cols-2"
+              >
                 {serviceDetails
                   .filter((s) => s.category === key)
-                  .map((s) => {
-                    const pr = pricesFor(s.name)
-                    return (
-                      <Reveal key={s.slug}>
-                        <article id={s.slug} className="h-full scroll-mt-24 rounded-2xl bg-white p-7 shadow-[0_6px_24px_rgba(0,0,0,0.05)]">
-                          <div className="flex flex-wrap items-baseline justify-between gap-3">
-                            <h4 className="font-display text-[22px] text-ink">{s.name}</h4>
-                            <p className="text-sm font-bold text-bronze">
-                              {pr.map((p) => `${p.time} min – ${p.price} zł`).join(' · ')}
-                            </p>
-                          </div>
-                          <p className="mt-3 text-[15px] leading-relaxed">{s.long}</p>
-                          <p className="mt-4 text-sm font-bold text-ink">Dla kogo:</p>
-                          <ul className="mt-1 flex flex-wrap gap-2">
-                            {s.forWhom.map((f) => (
-                              <li key={f} className="rounded-full bg-sage-light px-3 py-1 text-[13px] text-ink">{f}</li>
-                            ))}
-                          </ul>
-                        </article>
-                      </Reveal>
-                    )
-                  })}
-              </div>
+                  .map((s) => (
+                    <ServiceCard key={s.slug} s={s} />
+                  ))}
+              </motion.div>
             </div>
           ))}
         </div>
@@ -144,5 +159,24 @@ export default function Pricing() {
 
       <CtaBand title="Wybrałeś zabieg?" text="Zadzwoń, a ustalimy dogodny termin wizyty w gabinecie przy ul. Ochronek 34 w Tarnowie." />
     </>
+  )
+}
+
+function ServiceCard({ s }: { s: ServiceDetail }) {
+  const pr = pricesFor(s.name)
+  return (
+    <article id={s.slug} className="h-full scroll-mt-24 rounded-2xl bg-white p-7 shadow-[0_6px_24px_rgba(0,0,0,0.05)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_14px_34px_rgba(0,0,0,0.08)]">
+      <div className="flex flex-wrap items-baseline justify-between gap-3">
+        <h4 className="font-display text-[22px] text-ink">{s.name}</h4>
+        <p className="text-sm font-bold text-bronze">{pr.map((p) => `${p.time} min – ${p.price} zł`).join(' · ')}</p>
+      </div>
+      <p className="mt-3 text-[15px] leading-relaxed">{s.long}</p>
+      <p className="mt-4 text-sm font-bold text-ink">Dla kogo:</p>
+      <ul className="mt-1 flex flex-wrap gap-2">
+        {s.forWhom.map((f) => (
+          <li key={f} className="rounded-full bg-sage-light px-3 py-1 text-[13px] text-ink">{f}</li>
+        ))}
+      </ul>
+    </article>
   )
 }
