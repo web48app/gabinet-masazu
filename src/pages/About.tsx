@@ -122,11 +122,9 @@ export default function About() {
               ))}
             </ul>
             <div className="mt-6 flex flex-wrap items-center gap-4">
-              <div className="inline-block rounded-full bg-sage p-[10px_44px]">
-                <a href={site.phoneHref} className="inline-block rounded-full bg-[#32373c] px-6 py-3 text-[15px] font-bold text-white transition hover:bg-ink">
-                  Umów wizytę
-                </a>
-              </div>
+              <a href={site.phoneHref} className="btn-sage">
+                Umów wizytę
+              </a>
               <Link to="/cennik" className="font-bold text-leaf underline-offset-4 hover:underline">Zobacz cennik →</Link>
             </div>
           </Reveal>
