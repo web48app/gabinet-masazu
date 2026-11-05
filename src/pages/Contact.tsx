@@ -1,10 +1,9 @@
-import { useState } from 'react'
-import { MapPin, Phone, Mail, Facebook, Instagram, Send } from 'lucide-react'
+import { MapPin, Phone, Mail, Facebook, Instagram } from 'lucide-react'
 import FaqList from '../components/FaqList'
 import Seo from '../components/Seo'
 import PageBanner from '../components/PageBanner'
 import Reveal from '../components/Reveal'
-import { contactFaq, hours, serviceDetails, site } from '../data/site'
+import { contactFaq, hours, site } from '../data/site'
 import { breadcrumb, businessSchema, makeFaqSchema } from '../data/schema'
 
 export default function Contact() {
@@ -71,28 +70,29 @@ export default function Contact() {
         </div>
       </section>
 
-      {/* Formularz */}
-      <section className="bg-mist py-20" aria-labelledby="napisz">
-        <div className="mx-auto grid max-w-site gap-14 px-4 lg:grid-cols-[1fr_1.2fr]">
-          <Reveal>
+      {/* Jak umówić wizytę */}
+      <section className="bg-mist py-20" aria-labelledby="rezerwacja">
+        <div className="mx-auto max-w-site px-4">
+          <Reveal className="text-center">
             <p className="text-sm font-bold uppercase tracking-[0.2em] text-leaf">Rezerwacja</p>
-            <h2 id="napisz" className="mt-3 font-display text-[34px] text-ink lg:text-[40px]">Jak umówić wizytę</h2>
-            <ol className="mt-8 space-y-6">
-              {[
-                ['Zadzwoń', `Najszybciej: ${site.phone}. Ustalimy termin i rodzaj zabiegu.`],
-                ['Lub napisz', 'Wypełnij formularz obok – otworzy się wiadomość e-mail z Twoim zapytaniem.'],
-                ['Przyjdź do gabinetu', `${site.street}, ${site.postal} ${site.city}. Przed zabiegiem krótko porozmawiamy.`],
-              ].map(([t, d], i) => (
-                <li key={t} className="flex gap-4">
-                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-sage font-display text-lg text-white">{i + 1}</span>
-                  <span><strong className="block text-ink">{t}</strong>{d}</span>
+            <h2 id="rezerwacja" className="mt-3 font-display text-[34px] text-ink lg:text-[40px]">Jak umówić wizytę</h2>
+          </Reveal>
+          <ol className="mt-12 grid gap-6 md:grid-cols-3">
+            {[
+              { t: 'Zadzwoń', d: `Najszybciej: ${site.phone}. Ustalimy termin i rodzaj zabiegu.`, href: site.phoneHref },
+              { t: 'Lub napisz', d: `E-mail: ${site.email} – odpowiem i zaproponuję termin.`, href: `mailto:${site.email}` },
+              { t: 'Przyjdź do gabinetu', d: `${site.street}, ${site.postal} ${site.city}. Przed zabiegiem krótko porozmawiamy.`, href: site.mapsUrl },
+            ].map((x, i) => (
+              <Reveal key={x.t} delay={i * 0.08}>
+                <li className="h-full">
+                  <a href={x.href} {...(i === 2 ? { target: '_blank', rel: 'noopener noreferrer' } : {})} className="flex h-full gap-4 rounded-2xl bg-white p-7 shadow-[0_6px_24px_rgba(0,0,0,0.05)] transition hover:-translate-y-1 hover:shadow-[0_14px_34px_rgba(0,0,0,0.08)]">
+                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-sage font-display text-lg text-white">{i + 1}</span>
+                    <span><strong className="block text-ink">{x.t}</strong>{x.d}</span>
+                  </a>
                 </li>
-              ))}
-            </ol>
-          </Reveal>
-          <Reveal delay={0.1}>
-            <ContactForm />
-          </Reveal>
+              </Reveal>
+            ))}
+          </ol>
         </div>
       </section>
 
@@ -106,37 +106,3 @@ export default function Contact() {
   )
 }
 
-function ContactForm() {
-  const [f, setF] = useState({ name: '', phone: '', service: '', msg: '' })
-  const set = (k: keyof typeof f) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => setF({ ...f, [k]: e.target.value })
-  const submit = (e: React.FormEvent) => {
-    e.preventDefault()
-    const subject = `Zapytanie o wizytę${f.service ? ' – ' + f.service : ''}`
-    const body = `Imię: ${f.name}\nTelefon: ${f.phone}\nZabieg: ${f.service || '-'}\n\n${f.msg}`
-    window.location.href = `mailto:${site.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
-  }
-  const input = 'w-full rounded-xl border border-[#dedede] bg-white px-4 py-3 text-[15px] text-ink outline-none transition focus:border-sage focus:ring-2 focus:ring-sage/30'
-  return (
-    <form onSubmit={submit} className="rounded-[24px] bg-white p-7 shadow-[0_10px_40px_rgba(0,0,0,0.06)] lg:p-9">
-      <div className="grid gap-5 sm:grid-cols-2">
-        <label className="block text-sm font-bold text-ink">Imię
-          <input required value={f.name} onChange={set('name')} className={input + ' mt-2 font-normal'} autoComplete="name" />
-        </label>
-        <label className="block text-sm font-bold text-ink">Telefon
-          <input required type="tel" value={f.phone} onChange={set('phone')} className={input + ' mt-2 font-normal'} autoComplete="tel" />
-        </label>
-      </div>
-      <label className="mt-5 block text-sm font-bold text-ink">Zabieg
-        <select value={f.service} onChange={set('service')} className={input + ' mt-2 font-normal'}>
-          <option value="">Nie wiem – proszę o doradzenie</option>
-          {serviceDetails.map((s) => <option key={s.slug} value={s.name}>{s.name}</option>)}
-        </select>
-      </label>
-      <label className="mt-5 block text-sm font-bold text-ink">Wiadomość
-        <textarea rows={4} value={f.msg} onChange={set('msg')} placeholder="Opisz krótko dolegliwości lub preferowany termin" className={input + ' mt-2 font-normal'} />
-      </label>
-      <button type="submit" className="btn-sage mt-6 w-full gap-2"><Send size={16} /> Wyślij zapytanie</button>
-      <p className="mt-3 text-center text-xs text-[#8a8a8a]">Formularz otworzy Twój program pocztowy. Dane nie są nigdzie zapisywane.</p>
-    </form>
-  )
-}

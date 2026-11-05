@@ -1,20 +1,15 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { Banknote, CreditCard, Smartphone } from 'lucide-react'
 import Seo from '../components/Seo'
 import PageBanner from '../components/PageBanner'
 import Reveal from '../components/Reveal'
 import FaqList from '../components/FaqList'
 import CtaBand from '../components/CtaBand'
+import PaymentMethods from '../components/PaymentMethods'
 import { categories, prices, pricesFor, pricingFaq, serviceDetails, type ServiceDetail } from '../data/site'
 import { breadcrumb, businessSchema, makeFaqSchema, servicesListSchema } from '../data/schema'
 
-const payments = [
-  { icon: Banknote, label: 'Gotówka' },
-  { icon: CreditCard, label: 'Karta płatnicza' },
-  { icon: Smartphone, label: 'BLIK' },
-]
 
 const tips = [
   'Na masaż ciała najlepiej nie przychodzić tuż po obfitym posiłku.',
@@ -73,16 +68,7 @@ export default function Pricing() {
 
           <div className="mt-20 text-center">
             <h2 className="text-[28px] font-extrabold text-body">Formy płatności</h2>
-            <ul className="mt-8 flex justify-center gap-8 sm:gap-14">
-              {payments.map((p) => (
-                <li key={p.label} className="group flex flex-col items-center">
-                  <span className="flex h-[76px] w-[76px] items-center justify-center rounded-full bg-sage-light text-leaf ring-1 ring-sage/40 transition duration-300 group-hover:-translate-y-1 group-hover:bg-sage group-hover:text-white group-hover:shadow-[0_10px_24px_rgba(156,199,161,0.45)]" aria-hidden="true">
-                    <p.icon size={32} strokeWidth={1.6} />
-                  </span>
-                  <span className="mt-3 text-sm font-semibold tracking-wider text-ink">{p.label}</span>
-                </li>
-              ))}
-            </ul>
+            <PaymentMethods />
           </div>
         </div>
       </section>
