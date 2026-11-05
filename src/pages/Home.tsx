@@ -4,6 +4,7 @@ import { motion } from 'framer-motion'
 import { Helmet } from 'react-helmet-async'
 import Seo from '../components/Seo'
 import Reveal from '../components/Reveal'
+import FaqList from '../components/FaqList'
 import { faq, services, site } from '../data/site'
 import { businessSchema, faqSchema, personSchema, websiteSchema } from '../data/schema'
 
@@ -115,16 +116,8 @@ export default function Home() {
             <p className="text-sm font-bold uppercase tracking-[0.2em] text-leaf">FAQ</p>
             <h2 id="faq" className="mt-3 font-display text-[34px] text-ink lg:text-[42px]">Najczęstsze pytania</h2>
           </Reveal>
-          <div className="mt-10 divide-y divide-[#e7e7e7] border-y border-[#e7e7e7]">
-            {faq.map((f) => (
-              <details key={f.q} className="group py-5">
-                <summary className="flex cursor-pointer list-none items-center justify-between gap-6 text-[17px] font-bold text-ink">
-                  <h3>{f.q}</h3>
-                  <span className="text-2xl text-sage transition group-open:rotate-45">+</span>
-                </summary>
-                <p className="mt-3 leading-relaxed">{f.a}</p>
-              </details>
-            ))}
+          <div className="mt-10">
+            <FaqList items={faq} />
           </div>
         </div>
       </section>

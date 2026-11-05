@@ -1,4 +1,4 @@
-import { SITE_URL, site, hours, prices, faq } from './site'
+import { SITE_URL, site, hours, prices, faq, serviceDetails, pricesFor } from './site'
 
 const BUSINESS_ID = SITE_URL + '/#gabinet'
 const PERSON_ID = SITE_URL + '/#karolina-orlik'
@@ -102,13 +102,35 @@ export const websiteSchema = {
   publisher: { '@id': BUSINESS_ID },
 }
 
-export const faqSchema = {
+export const makeFaqSchema = (items: { q: string; a: string }[]) => ({
   '@context': 'https://schema.org',
   '@type': 'FAQPage',
-  mainEntity: faq.map((f) => ({
+  mainEntity: items.map((f) => ({
     '@type': 'Question',
     name: f.q,
     acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
+})
+
+export const faqSchema = makeFaqSchema(faq)
+
+export const servicesListSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  name: 'Zabiegi w gabinecie masażu Karolina Orlik – Tarnów',
+  itemListElement: serviceDetails.map((s, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    item: {
+      '@type': 'Service',
+      '@id': SITE_URL + '/cennik#' + s.slug,
+      name: s.name,
+      description: s.short,
+      serviceType: s.name,
+      areaServed: { '@type': 'City', name: 'Tarnów' },
+      provider: { '@id': BUSINESS_ID },
+      offers: pricesFor(s.name).map((p) => ({ '@type': 'Offer', price: p.price, priceCurrency: 'PLN', description: p.time + ' min' })),
+    },
   })),
 }
 
